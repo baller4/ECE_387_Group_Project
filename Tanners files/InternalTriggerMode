@@ -1,0 +1,58 @@
+//This is it baby!
+// in and en to VCC
+// Internal trigger mode
+#include <Sparkfun_DRV2605L.h>
+#include <Wire.h>
+#include <Ultrasonic.h>
+SFE_HMD_DRV2605L HMD;     //Is needed for the haptic driver's library
+
+Ultrasonic Ultrasonic(12, 13);
+int distance=0;
+int average=0;
+
+void setup() {
+  Serial.begin(9600);
+  HMD.Mode(0x00); //get out of standby and use internal trigger (using GO command)
+  HMD.MotorSelect(0x0A); //This selects the type of motor that you are using. specific to the type of ERM that I used
+  HMD.Library(6); //This selects the library that is used for the motor that your using. change to 7 for ERM motors 
+  HMD.begin(); // Initiates the chip
+}
+
+void loop() {
+  
+ distance=Ultrasonic.distanceRead();    //Reads the distance from the ultrasonic sensor to an object. D=(time*speed of light)/2
+ if(distance<=15&&distance>10){
+  HMD.Waveform(100,42);   //This lines up a waveform
+  HMD.go();               // This drives the waveforsm that were lined up
+  delay(50);              // Meant to hold the vibration for a certain time period
+  HMD.stop();             // This stops driving the motor
+  delay(50);              // this holds the steady state before there is another waveform driven
+ }
+ else if(distance<=10&&distance>5){
+  HMD.Waveform(41,50);
+  HMD.go();
+  delay(30);
+  HMD.stop();
+  delay(30);
+ }
+ else if(distance<=5&&distance>0){
+  HMD.Waveform(40,40);
+  HMD.go();
+  delay(10);
+  HMD.stop();
+  delay(10);
+ }
+ else
+ HMD.stop();
+ 
+  Serial.print(distance);
+ if(distance<=15&&distance>10)
+ Serial.println("Vibrate");
+ else if(distance<=10&&distance>5)
+ Serial.println("Vibrate!");
+ else if(distance<=5&&distance>0)
+ Serial.println("VIBRATE!!");
+ else
+ Serial.println(); 
+ 
+}
