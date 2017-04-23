@@ -5,9 +5,6 @@
 #include "pitches.h"
 
 
-//int intPin = 12;
-//int myLed = 13;
-
 int val;
 int prevVal;
 
@@ -18,14 +15,7 @@ void setup() {
   
   //--------------------------------------------------------------------//
   Wire.begin();
-	Serial.begin(38400);
-	
-//	pinMode(intPin, INPUT);
-//	digitalWrite(intPin, LOW);
-//	pinMode(myLed, OUTPUT);
-//	digitalWrite(myLed, HIGH);
-	
-    
+	Serial.begin(38400);   
 	
     // Self testing the MPU9250 and reporting values
     myIMU.MPU9250SelfTest(myIMU.SelfTest);
