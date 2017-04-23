@@ -1,0 +1,111 @@
+#include <MPU9250.h>
+#include <quaternionFilters.h>
+#include <Wire.h>
+#include <SPI.h>
+
+const int led0=13;
+const int led1=11;
+const int led2=10;
+const int led3=9;
+const int led4=8;
+const int led5=5;
+const int led6=3;
+
+MPU9250 myIMU;
+const int SENSOR_PIN = 0;      // Analog input pin
+
+void setup()
+{
+  pinMode(led0,OUTPUT);
+  pinMode(led1,OUTPUT);
+  pinMode(led2,OUTPUT);
+  pinMode(led3,OUTPUT);
+  pinMode(led4,OUTPUT);
+  pinMode(led5,OUTPUT);
+  pinMode(led6,OUTPUT);
+  Wire.begin();
+  Serial.begin(38400);
+  myIMU.MPU9250SelfTest(myIMU.SelfTest);
+  myIMU.calibrateMPU9250(myIMU.gyroBias, myIMU.accelBias);
+  Serial.write("yo");
+}
+
+
+void loop()
+{
+  int sensorValue;
+  sensorValue = analogRead(SENSOR_PIN);
+  if (sensorValue<=300&&sensorValue>=1){
+    digitalWrite(led6,HIGH);
+  }
+  else if(sensorValue>300&&sensorValue<=600){
+    digitalWrite(led5,HIGH);
+  }
+  else if( sensorValue>600&&sensorValue<=1000){
+    Serial.println("Didn't have a led but it would be lit here lolz");
+  }
+  else {
+    digitalWrite(led6,LOW);
+    digitalWrite(led5,LOW);
+  }
+  Serial.print("Sensor value: ");
+  Serial.println(sensorValue);
+  delay(100);
+    if (myIMU.readByte(MPU9250_ADDRESS, INT_STATUS) & 0x01)
+  {  
+    myIMU.readAccelData(myIMU.accelCount);  // Read the x/y/z adc values
+    myIMU.getAres();
+ // myIMU.ax = myIMU.accelCount[0]; // using raw values w/o converting to g's 
+  myIMU.ay = myIMU.accelCount[1];
+ 
+ // myIMU.az = myIMU.accelCount[2];
+  //----------------------------------//
+ // myIMU.readGyroData(myIMU.gyroCount);  // Read the x/y/z adc values
+ //   myIMU.getGres();
+ // myIMU.gx = myIMU.gyroCount[0]; // using raw values w/o converting to degrees per sec
+  //myIMU.gy = myIMU.gyroCount[1];
+ // myIMU.gz = myIMU.gyroCount[2];
+  
+  
+  // Printing Values... Used for testing and confirming what range of values to use for their respective function
+//  Serial.print("X - Acceleration = "); Serial.print(myIMU.ax);
+  Serial.print(" | Y - Acceleration = "); Serial.print(myIMU.ay);Serial.print("   ");
+ // Serial.print(" | Z - Acceleration = "); Serial.print(myIMU.az);
+ // Serial.print("\t");
+  //Serial.print(" |  X - Gyroscope = "); Serial.print(myIMU.gx);
+  //Serial.print(" | Y - Gyroscope = "); Serial.print(myIMU.gy);
+  //Serial.print(" | Z - Gyroscope = "); Serial.println(myIMU.gz);
+  }
+   if(myIMU.ay>=1500&&myIMU.ay<=3000){
+    digitalWrite(led0,HIGH);
+    digitalWrite(led2,HIGH);
+  }
+  else if (myIMU.ay>3000&&myIMU.ay<=8000){
+    digitalWrite(led0,HIGH);
+    digitalWrite(led3,HIGH);
+  }
+  else if(myIMU.ay>8000&&myIMU.ay<=20000){
+    digitalWrite(led0,HIGH);
+    digitalWrite(led4,HIGH);
+  }
+  else if(myIMU.ay<=-1500&&myIMU.ay>=-3000){
+    digitalWrite(led1,HIGH);
+    digitalWrite(led2,HIGH);
+  }
+  else if(myIMU.ay<-3000&&myIMU.ay>=-8000){
+    digitalWrite(led1,HIGH);
+    digitalWrite(led3,HIGH);
+  }
+  else if (myIMU.ay<-8000&&myIMU.ay>=-20000){
+    digitalWrite(led1,HIGH);
+    digitalWrite(led4,HIGH);
+  }
+  else {
+    digitalWrite(led0,LOW);
+    digitalWrite(led1,LOW);
+    digitalWrite(led2,LOW);
+    digitalWrite(led3,LOW);
+    digitalWrite(led4,LOW);
+  }
+  // map(value, fromLow, fromHigh, toLow, toHigh)
+}
