@@ -33,6 +33,13 @@ void loop() {
 	myIMU.ax = myIMU.accelCount[0]; // using raw values w/o converting to g's 
 	myIMU.ay = myIMU.accelCount[1];
 	myIMU.az = myIMU.accelCount[2];
+	  
+	/*
+	// This is the correct bias values..... values range from (-1 to 0 to 1).
+	myIMU.ax = (float)myIMU.accelCount[0] * myIMU.aRes - myIMU.accelBias[0]; // using raw values w/o converting to g's 
+	myIMU.ay = (float)myIMU.accelCount[1] * myIMU.aRes - myIMU.accelBias[1];
+	myIMU.az = (float)myIMU.accelCount[2] * myIMU.aRes - myIMU.accelBias[2];
+	*/
 	//----------------------------------//
 	myIMU.readGyroData(myIMU.gyroCount);  // Read the x/y/z adc values
     myIMU.getGres();
