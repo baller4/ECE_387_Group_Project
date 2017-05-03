@@ -155,13 +155,13 @@ void showData() {
 void sendD() {
   Serial.println("send");
 //  startRadio();
-  char dataToSend[1] = {0};
-//  if(Ultrasonic.distanceRead()<50)
-//  {
-//    dataToSend[0]=1;
-//  }else{
-//    dataToSend[0]=0;
-//  }
+  char dataToSend[1];
+  if(Ultrasonic.distanceRead()<50)
+  {
+    dataToSend[0]=1;
+  }else{
+    dataToSend[0]=0;
+  }
   
   radio.stopListening();
   
