@@ -45,7 +45,7 @@ void readData() {
     //read the data and store it in dataReceived
     radio.read(&dataReceived, sizeof(dataReceived));
     
-    //move the car
+    //move the car based off of the data received
     move(dataReceived);
     
     //show the read data
