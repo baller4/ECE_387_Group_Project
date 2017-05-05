@@ -71,16 +71,12 @@ void move(char * data) {
     speed1=0;
     break;        
     case 1:
-    speed0=80;
-    speed1=80;
-    break;
-    case 2:
-    speed0=90;
-    speed1=90;
-    break;
-    case 3:
     speed0=100;
     speed1=100;
+    break;
+    case -1:
+    speed0=-100;
+    speed1=-100;
     break;
     default:
     Serial.println("error");
@@ -89,18 +85,24 @@ void move(char * data) {
   }
   switch(data[1]){
     case -3:
-    if(speed1!=0){
-      speed1-=45;
+    if(speed1>0){
+      speed1-=45;//map(speed0,0,100,0,50);
+    }else{
+      speed1+=45;
     }
     break;
     case -2:
-    if(speed1!=0){
-      speed1-=30;//=map(speed1,0,100,0,50);
+    if(speed1>0){
+      speed1-=30;//map(speed0,0,100,0,50);
+    }else{
+      speed1+=30;
     }
     break;
     case -1:
-    if(speed1!=0){
-      speed1-=15;//map(speed1,0,100,0,75);
+    if(speed1>0){
+      speed1-=15;//map(speed0,0,100,0,50);
+    }else{
+      speed1+=15;
     }
     break;
     case 0:
@@ -108,18 +110,24 @@ void move(char * data) {
     speed1 = speed1;
     break;      
     case 1:
-    if(speed0!=0){
-      speed0-=15;//map(speed0,0,100,0,75);
+    if(speed0>0){
+      speed0-=15;//map(speed0,0,100,0,50);
+    }else{
+      speed0+=15;
     }
     break;
     case 2:
-    if(speed0!=0){
+    if(speed0>0){
       speed0-=30;//map(speed0,0,100,0,50);
+    }else{
+      speed0+=30;
     }
     break;
     case 3:
-    if(speed0!=0){
-    speed0-=45;//map(speed0,0,100,0,25);
+    if(speed0>0){
+      speed0-=45;//map(speed0,0,100,0,50);
+    }else{
+      speed0+=45;
     }
     break;
     default:
@@ -153,7 +161,7 @@ void showData() {
 }
 
 void sendD() {
-  Serial.println("send");
+//  Serial.println("send");
 //  startRadio();
   char dataToSend[1];
   if(Ultrasonic.distanceRead()<50)
@@ -167,11 +175,11 @@ void sendD() {
   
   bool rslt;
   rslt = radio.write(&dataToSend, sizeof(dataToSend));
-  Serial.println("send1");
+//  Serial.println("send1");
         // Always use sizeof() as it gives the size as the number of bytes.
         // For example if dataToSend was an int sizeof() would correctly return 2
   radio.startListening();
-  Serial.println("send2");
+//  Serial.println("send2");
   Serial.print("Data Sent ");
   Serial.print(dataToSend[0],DEC);
   if (rslt) {
