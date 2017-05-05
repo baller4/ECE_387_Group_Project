@@ -1,5 +1,4 @@
 #include <SPI.h>
-#include <nRF24L01.h>
 #include <RF24.h>
 #include "MotorDriver.h"
 #include <Ultrasonic.h>
@@ -15,13 +14,10 @@ RF24 radio(CE_PIN, CSN_PIN);
 MotorDriver motor;
 
 char dataReceived[2]; // this must match dataToSend in the TX
-//char dataToSend[4] = "BBB";
-
 
 void setup() {
-  //int a = -1;
+  
   Serial.begin(250000);
-  //Serial.println(a,HEX);
   
   Serial.println("SimpleRx Starting");
   motor.begin();
@@ -35,33 +31,30 @@ void setup() {
   radio.startListening();
 }
 
-
 void loop() {
   readData();
-  delay(100);
+  delay(50);
   sendD();
-  delay(100);
-  
-    
+  delay(50); 
 }
 
+//read the data from the glove
 void readData() {
-  Serial.println("read");
-//  while
-//  startRadio();
   if(radio.available()) {
     
     //read the data and store it in dataReceived
     radio.read(&dataReceived, sizeof(dataReceived));
+    
+    //move the car
     move(dataReceived);
-      //show the read data
+    
+    //show the read data
     showData();
-  }else{
-    Serial.println("nothing recieved");
   }
   
 }
 
+//moves the car given data from the glove
 void move(char * data) {
   Serial.println("move");
   int speed0,speed1;
@@ -86,21 +79,21 @@ void move(char * data) {
   switch(data[1]){
     case -3:
     if(speed1>0){
-      speed1-=45;//map(speed0,0,100,0,50);
+      speed1-=45;
     }else{
       speed1+=45;
     }
     break;
     case -2:
     if(speed1>0){
-      speed1-=30;//map(speed0,0,100,0,50);
+      speed1-=30;
     }else{
       speed1+=30;
     }
     break;
     case -1:
     if(speed1>0){
-      speed1-=15;//map(speed0,0,100,0,50);
+      speed1-=15;
     }else{
       speed1+=15;
     }
@@ -111,21 +104,21 @@ void move(char * data) {
     break;      
     case 1:
     if(speed0>0){
-      speed0-=15;//map(speed0,0,100,0,50);
+      speed0-=15;
     }else{
       speed0+=15;
     }
     break;
     case 2:
     if(speed0>0){
-      speed0-=30;//map(speed0,0,100,0,50);
+      speed0-=30;
     }else{
       speed0+=30;
     }
     break;
     case 3:
     if(speed0>0){
-      speed0-=45;//map(speed0,0,100,0,50);
+      speed0-=45;
     }else{
       speed0+=45;
     }
@@ -150,43 +143,45 @@ void move(char * data) {
   }
 }
 
+//for debugging
 void showData() {
   Serial.print("Data received ");
   Serial.print(dataReceived[0],DEC);
   Serial.print(dataReceived[1],DEC);
-  //Serial.print(dataReceived[1]);
-  //Serial.print(dataReceived[2]);
   Serial.println(); 
-  //delay(500);
 }
 
+//sends a 0 or 1 to the glove to tell the glove if the car is close to an object
 void sendD() {
-//  Serial.println("send");
-//  startRadio();
   char dataToSend[1];
-  if(Ultrasonic.distanceRead()<50)
-  {
-    dataToSend[0]=1;
-  }else{
-    dataToSend[0]=0;
-  }
+  dataToSend[0] = ultraSonicData();
   
   radio.stopListening();
   
   bool rslt;
   rslt = radio.write(&dataToSend, sizeof(dataToSend));
-//  Serial.println("send1");
         // Always use sizeof() as it gives the size as the number of bytes.
-        // For example if dataToSend was an int sizeof() would correctly return 2
   radio.startListening();
-//  Serial.println("send2");
+  
   Serial.print("Data Sent ");
   Serial.print(dataToSend[0],DEC);
   if (rslt) {
     Serial.println("  Acknowledge received");
   }
   else {
-    delay(15);
+    delay(15); //short to delay if transcievers fall out of sync
     Serial.println("  Tx failed");
+  }
+}
+
+//determines if the car is close to an object
+char ultraSonicData() {
+  if(Ultrasonic.distanceRead()<50)
+  {
+    return 1; //if an object is close
+  }
+  else
+  {
+    return 0;
   }
 }
