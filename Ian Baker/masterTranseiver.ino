@@ -1,3 +1,4 @@
+//This is an example of two way communication that uses methods similar to that in the final glove and car codes
 #include <SPI.h>
 #include <RF24.h>
 
