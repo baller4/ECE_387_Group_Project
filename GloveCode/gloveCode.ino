@@ -37,7 +37,6 @@ void setup() {
   Serial.begin(38400);
 
   Serial.println("SimpleTx Starting");
- // myIMU.MPU9250SelfTest(myIMU.SelfTest);
   myIMU.calibrateMPU9250(myIMU.gyroBias, myIMU.accelBias);
     
   radio.begin();
@@ -59,15 +58,12 @@ void loop() {
    myIMU.readAccelData(myIMU.accelCount);  // Read the x/y/z adc values
    myIMU.getAres();
    myIMU.ay = (float)myIMU.accelCount[1] * myIMU.aRes - myIMU.accelBias[1];
-// myIMU.ay = myIMU.accelCount[1];
    Serial.print(myIMU.ay);
   sensorData();
   send(carSpeed, carDirac);
   delay(50);
   readData();
   delay(50);
- // delay(500);
- // readData();
 }
 
 
@@ -83,9 +79,6 @@ void sensorData(void){
   else {
     carSpeed=1;
   }
-//  else if( sensorValue>700&&sensorValue<=1000){
-//    carSpeed=3;
-//    }
     if(myIMU.ay>-0.200&&myIMU.ay<0.200){
       carDirac=0;
     }
@@ -161,18 +154,11 @@ else {
 }
 
  if(haptic){
-    HMD.Waveform(40,100);
+  HMD.Waveform(40,100);
   HMD.go();
-//  digitalWrite(out,HIGH);
-//  analogWrite(intensity,20);
-//  delay(100);
-// digitalWrite(out,LOW);
-//  analogWrite(intensity,0);
  }
  else{
   HMD.stop();
-//  digitalWrite(out,LOW);
-//  analogWrite(intensity,0);
  }
  Serial.println(".");
 }
