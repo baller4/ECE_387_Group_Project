@@ -54,10 +54,6 @@ void setup() {
 }
 
 void loop() {
-   myIMU.readAccelData(myIMU.accelCount);  // Read the x/y/z adc values
-   myIMU.getAres();
-   myIMU.ay = (float)myIMU.accelCount[1] * myIMU.aRes - myIMU.accelBias[1];
-   Serial.print(myIMU.ay);
   sensorData();
   send(carSpeed, carDirac);
   delay(50);
@@ -67,6 +63,10 @@ void loop() {
 
 
 void sensorData(void){
+   myIMU.readAccelData(myIMU.accelCount);  // Read the x/y/z adc values
+   myIMU.getAres();
+   myIMU.ay = (float)myIMU.accelCount[1] * myIMU.aRes - myIMU.accelBias[1];
+   Serial.print(myIMU.ay);
   int sensorValue;
   sensorValue = analogRead(SENSOR_PIN);
   if (sensorValue<=100&&sensorValue>=0){
