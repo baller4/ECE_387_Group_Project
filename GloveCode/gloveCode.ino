@@ -1,4 +1,3 @@
-#include <SPI.h>
 #include <RF24.h>
 #include <MPU9250.h>
 #include <quaternionFilters.h>
