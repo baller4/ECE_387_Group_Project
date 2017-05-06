@@ -57,8 +57,8 @@ void readData() {
 //moves the car given data from the glove
 void move(char * data) {
   Serial.println("move");
-  int speed0,speed1;
-  switch(data[0]){
+  int speed0,speed1; //speed1 represents the left motor and vise versa
+  switch(data[0]){ // this switch statement determin if the car is moving forward, backwards, or not at all
     case 0:
     speed0=0;
     speed1=0;
@@ -76,25 +76,25 @@ void move(char * data) {
     speed0=0;
     speed1=0;
   }
-  switch(data[1]){
+  switch(data[1]){// this switch statement modifies the speed of one of the motors if the car need to turn
     case -3:
     if(speed1>0){
       speed1-=45;
-    }else{
+    }else if(speed1<0){
       speed1+=45;
     }
     break;
     case -2:
     if(speed1>0){
       speed1-=30;
-    }else{
+    }else if(speed1<0){
       speed1+=30;
     }
     break;
     case -1:
     if(speed1>0){
       speed1-=15;
-    }else{
+    }else if(speed1<0){
       speed1+=15;
     }
     break;
@@ -105,21 +105,21 @@ void move(char * data) {
     case 1:
     if(speed0>0){
       speed0-=15;
-    }else{
+    }else if(speed0<0){
       speed0+=15;
     }
     break;
     case 2:
     if(speed0>0){
       speed0-=30;
-    }else{
+    }else if(speed0<0){
       speed0+=30;
     }
     break;
     case 3:
     if(speed0>0){
       speed0-=45;
-    }else{
+    }else if(speed0<0){
       speed0+=45;
     }
     break;
@@ -128,9 +128,10 @@ void move(char * data) {
     speed0=0;
     speed1=0;
   }
-  digitalWrite(MOTORSHIELD_IN4, LOW);
   Serial.println(speed0);
   Serial.println(speed1);
+  
+  //if speed is 0, break, otherwise set the speed of the motor to speed#
   if(speed0==0){
     motor.brake(0);
   }else{
